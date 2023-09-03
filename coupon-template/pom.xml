@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>coupon-template-api</module>
-        <module>coupon-template-respority</module>
+        <module>coupon-template-repository</module>
         <module>coupon-template-service</module>
     </modules>
 
