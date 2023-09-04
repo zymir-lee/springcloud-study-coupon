@@ -3,26 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.1</version>
+        <groupId>pers.zymir</groupId>
+        <artifactId>coupon-customer</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>pers.zymir</groupId>
-    <artifactId>springcloud-study-coupon</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
-    <packaging>pom</packaging>
-    <modules>
-
-        <module>coupon-template</module>
-        <module>coupon-compute</module>
-        <module>coupon-customer</module>
-        <module>coupon-compute/coupon-compute-service</module>
-        <module>coupon-aggregation</module>
-    </modules>
+    <artifactId>coupon-customer-repsitory</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -32,28 +19,23 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.3.1</version>
         </dependency>
 
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.8.20</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
         </dependency>
 
         <dependency>
             <groupId>pers.zymir</groupId>
-            <artifactId>base-project-all</artifactId>
+            <artifactId>coupon-template-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>
