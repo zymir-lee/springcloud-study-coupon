@@ -5,14 +5,15 @@ import pers.zymir.coupon.compute.service.AbstractCouponCalculator;
 import pers.zymir.coupon.template.enums.CouponTypeEnum;
 
 @Component
-public class DefaultCalculator extends AbstractCouponCalculator {
+public class MoneyOffCalculator extends AbstractCouponCalculator {
     @Override
-    public Integer applyCouponType() {
-        return CouponTypeEnum.UNKNOWN.getCode();
+    protected long doCalculate(long total, long quota) {
+        // 满减
+        return Math.min(total, quota);
     }
 
     @Override
-    protected long doCalculate(long total, long quota) {
-        return 0;
+    public Integer applyCouponType() {
+        return CouponTypeEnum.MONEY_OFF.getCode();
     }
 }

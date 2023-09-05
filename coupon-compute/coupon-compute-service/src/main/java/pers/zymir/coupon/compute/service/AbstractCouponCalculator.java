@@ -19,7 +19,7 @@ public abstract class AbstractCouponCalculator implements CouponCalculator {
             }
             return doCalculate(shopPrice, couponTemplate.getQuota());
         }
-        if (isReachThreshold(couponTemplate.getThreshold(), couponComputeContext.getTotalPrice())) {
+        if (!isReachThreshold(couponTemplate.getThreshold(), couponComputeContext.getTotalPrice())) {
             return 0;
         }
         return doCalculate(couponComputeContext.getTotalPrice(), couponTemplate.getQuota());
