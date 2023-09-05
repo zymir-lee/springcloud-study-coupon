@@ -8,8 +8,7 @@ import pers.zymir.coupon.compute.dto.CouponComputeDTO;
 import pers.zymir.coupon.compute.model.CartProductItem;
 import pers.zymir.coupon.compute.model.ShoppingCart;
 import pers.zymir.coupon.compute.res.CouponComputeRes;
-import pers.zymir.coupon.compute.service.impl.Computer;
-import pers.zymir.coupon.compute.service.impl.CouponComputeFactory;
+import pers.zymir.coupon.compute.service.impl.CouponCalculatorFactory;
 import pers.zymir.coupon.template.model.CouponTemplate;
 import pers.zymir.coupon.template.service.ICouponTemplateService;
 import pers.zymir.util.stream.StreamUtil;
@@ -40,7 +39,8 @@ public class CouponComputeProcess implements ICouponComputeService {
         Map<Long, Long> couponDiscountMapping = new HashMap<>();
         Map<Long, Long> cache = new HashMap<>();
 
-        Map<Long, Long> shopPriceMapping = shoppingCart.getProductItems().stream().collect(Collectors.groupingBy(CartProductItem::getShopId, Collectors.summingLong(item -> item.getPrice() * item.getCount())));
+        Map<Long, Long> shopPriceMapping = shoppingCart.getProductItems().stream()
+                .collect(Collectors.groupingBy(CartProductItem::getShopId, Collectors.summingLong(item -> item.getPrice() * item.getCount())));
         for (CouponComputeDTO.CouponInfoDTO each : coupons) {
             Long couponTemplateId = each.getTemplateId();
             Long cacheRes = cache.get(each.getTemplateId());
@@ -49,9 +49,13 @@ public class CouponComputeProcess implements ICouponComputeService {
                 continue;
             }
             CouponTemplate couponTemplate = couponTemplateIdMapping.get(couponTemplateId);
-            CouponComputeContext context = CouponComputeContext.builder().couponTemplate(couponTemplate).totalPrice(computeTotalPrice(shoppingCart.getProductItems())).shopPriceMapping(shopPriceMapping).build();
-            Computer computer = CouponComputeFactory.fromCouponType(couponTemplate.getCouponType());
-            long discountPrice = computer.doCompute(context);
+            CouponComputeContext context = CouponComputeContext.builder()
+                    .couponTemplate(couponTemplate)
+                    .totalPrice(computeTotalPrice(shoppingCart.getProductItems()))
+                    .shopPriceMapping(shopPriceMapping)
+                    .build();
+            CouponCalculator couponCalculator = CouponCalculatorFactory.fromCouponType(couponTemplate.getCouponType());
+            long discountPrice = couponCalculator.calculate(context);
             couponDiscountMapping.put(each.getId(), discountPrice);
             cache.put(each.getTemplateId(), discountPrice);
         }

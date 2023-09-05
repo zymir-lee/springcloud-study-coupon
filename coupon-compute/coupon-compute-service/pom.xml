@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>pers.zymir</groupId>
-            <artifactId>coupon-customer-service</artifactId>
+            <artifactId>coupon-template-service</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
