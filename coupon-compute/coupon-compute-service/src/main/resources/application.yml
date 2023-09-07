@@ -9,3 +9,12 @@ spring:
     password: lzm549468
     url: jdbc:mysql://192.168.31.88:3306/coupon?serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.31.88:8848,192.168.31.88:8850
+        heart-beat-interval: 5000
+        heart-beat-timeout: 15000
+        namespace: 458dcc83-0a0b-4e70-accc-3747477eca9f
+        group: group-1
