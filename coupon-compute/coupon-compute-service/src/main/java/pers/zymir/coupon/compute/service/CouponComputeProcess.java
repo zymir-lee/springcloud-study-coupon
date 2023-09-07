@@ -38,8 +38,9 @@ public class CouponComputeProcess implements ICouponComputeService {
         Map<Long, CouponTemplate> couponTemplateIdMapping = couponTemplateService.couponTemplateIdMapping(couponTemplateIds);
         Map<Long, Long> couponDiscountMapping = new HashMap<>();
         Map<Long, Long> couponTemplateDiscountCache = new HashMap<>();
-
         Map<Long, Long> shopPriceMapping = computeEachShopPrice(shoppingCart);
+        long bestCouponId = 0;
+        long maxDiscount = 0;
         for (CouponComputeDTO.CouponInfoDTO each : coupons) {
             Long couponTemplateId = each.getTemplateId();
             Long cacheRes = couponTemplateDiscountCache.get(each.getTemplateId());
@@ -55,12 +56,15 @@ public class CouponComputeProcess implements ICouponComputeService {
                     .build();
             CouponCalculator couponCalculator = CouponCalculatorFactory.fromCouponType(couponTemplate.getCouponType());
             long discountPrice = couponCalculator.calculate(context);
+            if (discountPrice > maxDiscount) {
+                maxDiscount = discountPrice;
+                bestCouponId = each.getId();
+            }
             couponDiscountMapping.put(each.getId(), discountPrice);
             couponTemplateDiscountCache.put(each.getTemplateId(), discountPrice);
         }
 
-        long bestDiscountCouponId = findBestDiscountCouponId(couponDiscountMapping);
-        couponComputeRes.setBestCouponId(bestDiscountCouponId);
+        couponComputeRes.setBestCouponId(bestCouponId);
         couponComputeRes.setDiscountMapping(couponDiscountMapping);
         return couponComputeRes;
     }
@@ -68,18 +72,6 @@ public class CouponComputeProcess implements ICouponComputeService {
     private Map<Long, Long> computeEachShopPrice(ShoppingCart shoppingCart) {
         return shoppingCart.getProductItems().stream()
                 .collect(Collectors.groupingBy(CartProductItem::getShopId, Collectors.summingLong(item -> item.getPrice() * item.getCount())));
-    }
-
-    private long findBestDiscountCouponId(Map<Long, Long> couponDiscountMapping) {
-        long bestId = 0;
-        long discount = 0;
-        for (Map.Entry<Long, Long> each : couponDiscountMapping.entrySet()) {
-            if (each.getValue() > discount) {
-                bestId = each.getKey();
-                discount = each.getValue();
-            }
-        }
-        return bestId;
     }
 
     private long computeTotalPrice(List<CartProductItem> cartProductItems) {
