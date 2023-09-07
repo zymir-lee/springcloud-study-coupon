@@ -37,12 +37,12 @@ public class CouponComputeProcess implements ICouponComputeService {
         List<Long> couponTemplateIds = StreamUtil.mapTo(coupons, CouponComputeDTO.CouponInfoDTO::getTemplateId);
         Map<Long, CouponTemplate> couponTemplateIdMapping = couponTemplateService.couponTemplateIdMapping(couponTemplateIds);
         Map<Long, Long> couponDiscountMapping = new HashMap<>();
-        Map<Long, Long> couponDiscountCache = new HashMap<>();
+        Map<Long, Long> couponTemplateDiscountCache = new HashMap<>();
 
         Map<Long, Long> shopPriceMapping = computeEachShopPrice(shoppingCart);
         for (CouponComputeDTO.CouponInfoDTO each : coupons) {
             Long couponTemplateId = each.getTemplateId();
-            Long cacheRes = couponDiscountCache.get(each.getTemplateId());
+            Long cacheRes = couponTemplateDiscountCache.get(each.getTemplateId());
             if (Objects.nonNull(cacheRes)) {
                 couponDiscountMapping.put(each.getId(), cacheRes);
                 continue;
@@ -56,7 +56,7 @@ public class CouponComputeProcess implements ICouponComputeService {
             CouponCalculator couponCalculator = CouponCalculatorFactory.fromCouponType(couponTemplate.getCouponType());
             long discountPrice = couponCalculator.calculate(context);
             couponDiscountMapping.put(each.getId(), discountPrice);
-            couponDiscountCache.put(each.getTemplateId(), discountPrice);
+            couponTemplateDiscountCache.put(each.getTemplateId(), discountPrice);
         }
 
         long bestDiscountCouponId = findBestDiscountCouponId(couponDiscountMapping);
