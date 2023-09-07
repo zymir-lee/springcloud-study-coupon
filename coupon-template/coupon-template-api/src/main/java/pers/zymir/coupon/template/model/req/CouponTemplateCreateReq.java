@@ -1,10 +1,10 @@
-package pers.zymir.coupon.template.dto;
+package pers.zymir.coupon.template.model.req;
 
 import lombok.Data;
 import pers.zymir.coupon.template.enums.CouponTypeEnum;
 
 @Data
-public class CouponTemplateCreateDTO {
+public class CouponTemplateCreateReq {
     /**
      * 优惠券名称
      */

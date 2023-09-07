@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.zymir.coupon.template.dao.CouponTemplateMapper;
-import pers.zymir.coupon.template.dto.CouponTemplateCreateDTO;
 import pers.zymir.coupon.template.model.CouponTemplate;
+import pers.zymir.coupon.template.model.req.CouponTemplateCreateReq;
 import pers.zymir.coupon.template.service.ICouponTemplateService;
 import pers.zymir.util.sql.MybatisHelper;
 
@@ -25,8 +25,8 @@ public class CouponTemplateServiceImpl implements ICouponTemplateService {
     private CouponTemplateMapper couponTemplateMapper;
 
     @Override
-    public boolean createCouponTemplate(CouponTemplateCreateDTO couponTemplateCreateDTO) {
-        CouponTemplate couponTemplate = BeanUtil.toBean(couponTemplateCreateDTO, CouponTemplate.class);
+    public boolean createCouponTemplate(CouponTemplateCreateReq couponTemplateCreateReq) {
+        CouponTemplate couponTemplate = BeanUtil.toBean(couponTemplateCreateReq, CouponTemplate.class);
         int result = couponTemplateMapper.insert(couponTemplate);
         return MybatisHelper.executeSuccess(result);
     }

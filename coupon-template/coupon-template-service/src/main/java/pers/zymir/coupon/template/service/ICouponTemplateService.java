@@ -1,13 +1,13 @@
 package pers.zymir.coupon.template.service;
 
-import pers.zymir.coupon.template.dto.CouponTemplateCreateDTO;
 import pers.zymir.coupon.template.model.CouponTemplate;
+import pers.zymir.coupon.template.model.req.CouponTemplateCreateReq;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ICouponTemplateService {
-    boolean createCouponTemplate(CouponTemplateCreateDTO couponTemplateCreateDTO);
+    boolean createCouponTemplate(CouponTemplateCreateReq couponTemplateCreateReq);
 
     boolean removeCouponTemplate(long couponTemplateId);
 
