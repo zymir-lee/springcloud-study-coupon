@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import pers.zymir.compute.model.dto.CartProductItemDTO;
 import pers.zymir.compute.model.dto.CouponComputeDTO;
 import pers.zymir.compute.model.dto.CouponInfoDTO;
-import pers.zymir.compute.model.dto.ShoppingCartDTO;
+import pers.zymir.compute.model.req.CouponDiscountComputeReq;
 import pers.zymir.coupon.compute.context.CouponComputeContext;
 import pers.zymir.coupon.compute.res.CouponComputeRes;
 import pers.zymir.coupon.compute.service.impl.CouponCalculatorFactory;
@@ -30,7 +30,7 @@ public class CouponComputeProcess implements ICouponComputeService {
     public CouponComputeRes compute(CouponComputeDTO couponComputeDTO) {
         CouponComputeRes couponComputeRes = new CouponComputeRes();
 
-        ShoppingCartDTO shoppingCart = couponComputeDTO.getShoppingCart();
+        CouponDiscountComputeReq shoppingCart = couponComputeDTO.getShoppingCart();
         List<CouponInfoDTO> coupons = couponComputeDTO.getCoupons();
         if (CollUtil.isEmpty(coupons)) {
             return couponComputeRes;
@@ -70,7 +70,7 @@ public class CouponComputeProcess implements ICouponComputeService {
         return couponComputeRes;
     }
 
-    private Map<Long, Long> computeEachShopPrice(ShoppingCartDTO shoppingCart) {
+    private Map<Long, Long> computeEachShopPrice(CouponDiscountComputeReq shoppingCart) {
         return shoppingCart.getProductItems().stream()
                 .collect(Collectors.groupingBy(CartProductItemDTO::getShopId, Collectors.summingLong(item -> item.getPrice() * item.getCount())));
     }

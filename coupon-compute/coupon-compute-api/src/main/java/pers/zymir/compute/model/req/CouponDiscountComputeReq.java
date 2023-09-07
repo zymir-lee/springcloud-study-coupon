@@ -1,11 +1,12 @@
-package pers.zymir.compute.model.dto;
+package pers.zymir.compute.model.req;
 
 import lombok.Data;
+import pers.zymir.compute.model.dto.CartProductItemDTO;
 
 import java.util.List;
 
 @Data
-public class ShoppingCartDTO {
+public class CouponDiscountComputeReq {
     /**
      * 购物车内内商品
      */
