@@ -1,8 +1,8 @@
 package pers.zymir.coupon.compute.service;
 
-import pers.zymir.compute.model.dto.CouponComputeDTO;
+import pers.zymir.compute.model.req.CouponDiscountComputeReq;
 import pers.zymir.coupon.compute.res.CouponComputeRes;
 
 public interface ICouponComputeService {
-    CouponComputeRes compute(CouponComputeDTO couponComputeDTO);
+    CouponComputeRes compute(CouponDiscountComputeReq couponDiscountComputeReq);
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pers.zymir.coupon.template.model.CouponTemplate;
+import pers.zymir.compute.model.dto.CouponTemplateDTO;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CouponComputeContext {
-    private CouponTemplate couponTemplate;
+    private CouponTemplateDTO couponTemplateDTO;
     private Long totalPrice;
     private Map<Long, Long> shopPriceMapping;
 }

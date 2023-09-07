@@ -2,6 +2,7 @@ package pers.zymir.compute.model.req;
 
 import lombok.Data;
 import pers.zymir.compute.model.dto.CartProductItemDTO;
+import pers.zymir.compute.model.dto.CouponTemplateDTO;
 
 import java.util.List;
 
@@ -12,13 +13,7 @@ public class CouponDiscountComputeReq {
      */
     private List<CartProductItemDTO> productItems;
 
-    /**
-     * 优惠后价格
-     */
-    private Long afterDiscountPrice;
+    private List<CouponTemplateDTO> couponTemplates;
 
-    /**
-     *
-     */
     private Long userId;
 }

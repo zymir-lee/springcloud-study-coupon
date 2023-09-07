@@ -1,7 +1,7 @@
 package pers.zymir.coupon.compute.service;
 
+import pers.zymir.compute.model.dto.CouponTemplateDTO;
 import pers.zymir.coupon.compute.context.CouponComputeContext;
-import pers.zymir.coupon.template.model.CouponTemplate;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ public abstract class AbstractCouponCalculator implements CouponCalculator {
 
     @Override
     public long calculate(CouponComputeContext couponComputeContext) {
-        CouponTemplate couponTemplate = couponComputeContext.getCouponTemplate();
+        CouponTemplateDTO couponTemplate = couponComputeContext.getCouponTemplateDTO();
         if (couponTemplate.isLimitShop()) {
             Long shopId = couponTemplate.getShopId();
             Map<Long, Long> shopPriceMapping = couponComputeContext.getShopPriceMapping();
