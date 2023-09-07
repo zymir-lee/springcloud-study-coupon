@@ -21,7 +21,7 @@
         <module>coupon-compute</module>
         <module>coupon-customer</module>
         <module>coupon-compute/coupon-compute-service</module>
-        <module>coupon-aggregation</module>
+        <module>coupon-compute/coupon-compute-api</module>
     </modules>
 
     <properties>
