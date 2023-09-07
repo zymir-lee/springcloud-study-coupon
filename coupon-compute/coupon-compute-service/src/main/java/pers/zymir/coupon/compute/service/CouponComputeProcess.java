@@ -3,10 +3,11 @@ package pers.zymir.coupon.compute.service;
 import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pers.zymir.compute.model.dto.CartProductItemDTO;
+import pers.zymir.compute.model.dto.CouponComputeDTO;
+import pers.zymir.compute.model.dto.CouponInfoDTO;
+import pers.zymir.compute.model.dto.ShoppingCartDTO;
 import pers.zymir.coupon.compute.context.CouponComputeContext;
-import pers.zymir.coupon.compute.dto.CouponComputeDTO;
-import pers.zymir.coupon.compute.model.CartProductItem;
-import pers.zymir.coupon.compute.model.ShoppingCart;
 import pers.zymir.coupon.compute.res.CouponComputeRes;
 import pers.zymir.coupon.compute.service.impl.CouponCalculatorFactory;
 import pers.zymir.coupon.template.model.CouponTemplate;
@@ -29,19 +30,19 @@ public class CouponComputeProcess implements ICouponComputeService {
     public CouponComputeRes compute(CouponComputeDTO couponComputeDTO) {
         CouponComputeRes couponComputeRes = new CouponComputeRes();
 
-        ShoppingCart shoppingCart = couponComputeDTO.getShoppingCart();
-        List<CouponComputeDTO.CouponInfoDTO> coupons = couponComputeDTO.getCoupons();
+        ShoppingCartDTO shoppingCart = couponComputeDTO.getShoppingCart();
+        List<CouponInfoDTO> coupons = couponComputeDTO.getCoupons();
         if (CollUtil.isEmpty(coupons)) {
             return couponComputeRes;
         }
-        List<Long> couponTemplateIds = StreamUtil.mapTo(coupons, CouponComputeDTO.CouponInfoDTO::getTemplateId);
+        List<Long> couponTemplateIds = StreamUtil.mapTo(coupons, CouponInfoDTO::getTemplateId);
         Map<Long, CouponTemplate> couponTemplateIdMapping = couponTemplateService.couponTemplateIdMapping(couponTemplateIds);
         Map<Long, Long> couponDiscountMapping = new HashMap<>();
         Map<Long, Long> couponTemplateDiscountCache = new HashMap<>();
         Map<Long, Long> shopPriceMapping = computeEachShopPrice(shoppingCart);
         long bestCouponId = 0;
         long maxDiscount = 0;
-        for (CouponComputeDTO.CouponInfoDTO each : coupons) {
+        for (CouponInfoDTO each : coupons) {
             Long couponTemplateId = each.getTemplateId();
             Long cacheRes = couponTemplateDiscountCache.get(each.getTemplateId());
             if (Objects.nonNull(cacheRes)) {
@@ -69,20 +70,20 @@ public class CouponComputeProcess implements ICouponComputeService {
         return couponComputeRes;
     }
 
-    private Map<Long, Long> computeEachShopPrice(ShoppingCart shoppingCart) {
+    private Map<Long, Long> computeEachShopPrice(ShoppingCartDTO shoppingCart) {
         return shoppingCart.getProductItems().stream()
-                .collect(Collectors.groupingBy(CartProductItem::getShopId, Collectors.summingLong(item -> item.getPrice() * item.getCount())));
+                .collect(Collectors.groupingBy(CartProductItemDTO::getShopId, Collectors.summingLong(item -> item.getPrice() * item.getCount())));
     }
 
-    private long computeTotalPrice(List<CartProductItem> cartProductItems) {
+    private long computeTotalPrice(List<CartProductItemDTO> cartProductItems) {
         long total = 0;
-        for (CartProductItem each : cartProductItems) {
+        for (CartProductItemDTO each : cartProductItems) {
             total += computePrice(each);
         }
         return total;
     }
 
-    private long computePrice(CartProductItem cartProductItems) {
+    private long computePrice(CartProductItemDTO cartProductItems) {
         return cartProductItems.getPrice() * cartProductItems.getCount();
     }
 }

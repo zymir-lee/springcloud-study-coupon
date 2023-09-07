@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pers.zymir.basic.result.Resp;
-import pers.zymir.coupon.compute.dto.CouponComputeDTO;
+import pers.zymir.compute.model.dto.CouponComputeDTO;
 import pers.zymir.coupon.compute.res.CouponComputeRes;
 import pers.zymir.coupon.compute.service.ICouponComputeService;
 
