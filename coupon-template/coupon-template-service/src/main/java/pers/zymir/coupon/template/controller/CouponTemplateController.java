@@ -18,21 +18,18 @@ public class CouponTemplateController {
     private ICouponTemplateService couponTemplateService;
 
     @GetMapping("/{id}")
-    public Resp<CouponTemplate> getById(@PathVariable("id") long id) {
-        CouponTemplate couponTemplate = couponTemplateService.getCouponTemplateById(id);
-        return Resp.success(couponTemplate);
+    public CouponTemplate getById(@PathVariable("id") long id) {
+        return couponTemplateService.getCouponTemplateById(id);
     }
 
     @PostMapping
-    public Resp<Map<Long, CouponTemplate>> getMapping(@RequestBody List<Long> couponTemplateIds) {
-        Map<Long, CouponTemplate> couponTemplateMapping = couponTemplateService.couponTemplateIdMapping(couponTemplateIds);
-        return Resp.success(couponTemplateMapping);
+    public Map<Long, CouponTemplate> getMapping(@RequestBody List<Long> couponTemplateIds) {
+        return couponTemplateService.couponTemplateIdMapping(couponTemplateIds);
     }
 
     @PostMapping
-    public Resp<List<CouponTemplate>> listCouponTemplates(@RequestBody List<Long> couponTemplateIds) {
-        List<CouponTemplate> couponTemplates = couponTemplateService.listCouponTemplates(couponTemplateIds);
-        return Resp.success(couponTemplates);
+    public List<CouponTemplate> listCouponTemplates(@RequestBody List<Long> couponTemplateIds) {
+        return couponTemplateService.listCouponTemplates(couponTemplateIds);
     }
 
     @PostMapping
