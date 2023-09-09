@@ -17,3 +17,18 @@ spring:
         heart-beat-timeout: 15000
         namespace: 458dcc83-0a0b-4e70-accc-3747477eca9f
         group: group-1
+feign:
+  client:
+    config:
+      # 全局配置
+      default:
+        # 网络连接阶段超时时间
+        connectTimeout: 1000
+        # 服务请求响应超时时间
+        readTimeout: 5000
+      # 针对特定服务做配置
+      coupon-compute:
+        # 网络连接阶段超时时间
+        connectTimeout: 1000
+        # 服务请求响应超时时间
+        readTimeout: 1000
