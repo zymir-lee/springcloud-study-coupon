@@ -30,6 +30,12 @@ public class CouponTemplateController {
     }
 
     @PostMapping
+    public Resp<List<CouponTemplate>> listCouponTemplates(@RequestBody List<Long> couponTemplateIds) {
+        List<CouponTemplate> couponTemplates = couponTemplateService.listCouponTemplates(couponTemplateIds);
+        return Resp.success(couponTemplates);
+    }
+
+    @PostMapping
     public Resp<Boolean> createCouponTemplate(@RequestBody CouponTemplateCreateReq couponTemplateCreateReq) {
         boolean couponTemplate = couponTemplateService.createCouponTemplate(couponTemplateCreateReq);
         return Resp.success(couponTemplate);

@@ -16,4 +16,6 @@ public interface ICouponTemplateService {
     CouponTemplate getCouponTemplateById(long couponTemplateId);
 
     Map<Long, CouponTemplate> couponTemplateIdMapping(List<Long> couponTemplateIds);
+
+    List<CouponTemplate> listCouponTemplates(List<Long> couponTemplateIds);
 }
