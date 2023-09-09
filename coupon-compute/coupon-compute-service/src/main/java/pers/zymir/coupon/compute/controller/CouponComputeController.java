@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pers.zymir.basic.result.Resp;
 import pers.zymir.compute.model.req.CouponDiscountComputeReq;
-import pers.zymir.coupon.compute.res.CouponComputeRes;
+import pers.zymir.compute.model.res.CouponComputeRes;
 import pers.zymir.coupon.compute.service.ICouponComputeService;
 
 @RestController
@@ -18,8 +17,7 @@ public class CouponComputeController {
   private ICouponComputeService computeService;
 
   @PostMapping
-  public Resp<CouponComputeRes> compute(@RequestBody CouponDiscountComputeReq couponDiscountComputeReq) {
-    CouponComputeRes compute = computeService.compute(couponDiscountComputeReq);
-    return Resp.success(compute);
+  public CouponComputeRes compute(@RequestBody CouponDiscountComputeReq couponDiscountComputeReq) {
+    return computeService.compute(couponDiscountComputeReq);
   }
 }

@@ -1,4 +1,4 @@
-package pers.zymir.coupon.compute.res;
+package pers.zymir.compute.model.res;
 
 import lombok.Data;
 

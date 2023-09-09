@@ -62,8 +62,4 @@ public class CouponTemplate {
     public boolean canUseForShop(Long shopId) {
         return Objects.isNull(shopId) || Objects.equals(shopId, this.shopId);
     }
-
-    public boolean isLimitShop() {
-        return Objects.nonNull(shopId);
-    }
 }

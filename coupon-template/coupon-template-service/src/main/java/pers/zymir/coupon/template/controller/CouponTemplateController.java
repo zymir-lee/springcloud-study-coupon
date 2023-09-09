@@ -22,17 +22,17 @@ public class CouponTemplateController {
         return couponTemplateService.getCouponTemplateById(id);
     }
 
-    @PostMapping
+    @PostMapping("/mapping")
     public Map<Long, CouponTemplate> getMapping(@RequestBody List<Long> couponTemplateIds) {
         return couponTemplateService.couponTemplateIdMapping(couponTemplateIds);
     }
 
-    @PostMapping
+    @PostMapping("/list")
     public List<CouponTemplate> listCouponTemplates(@RequestBody List<Long> couponTemplateIds) {
         return couponTemplateService.listCouponTemplates(couponTemplateIds);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Resp<Boolean> createCouponTemplate(@RequestBody CouponTemplateCreateReq couponTemplateCreateReq) {
         boolean couponTemplate = couponTemplateService.createCouponTemplate(couponTemplateCreateReq);
         return Resp.success(couponTemplate);

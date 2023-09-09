@@ -7,7 +7,7 @@ import pers.zymir.compute.model.dto.CartProductItemDTO;
 import pers.zymir.compute.model.dto.CouponTemplateDTO;
 import pers.zymir.compute.model.req.CouponDiscountComputeReq;
 import pers.zymir.coupon.compute.context.CouponComputeContext;
-import pers.zymir.coupon.compute.res.CouponComputeRes;
+import pers.zymir.compute.model.res.CouponComputeRes;
 import pers.zymir.coupon.compute.service.impl.CouponCalculatorFactory;
 
 import java.util.HashMap;

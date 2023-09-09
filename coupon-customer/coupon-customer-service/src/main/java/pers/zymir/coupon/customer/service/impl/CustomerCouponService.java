@@ -2,14 +2,18 @@ package pers.zymir.coupon.customer.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import pers.zymir.compute.model.dto.CartProductItemDTO;
 import pers.zymir.compute.model.dto.CouponTemplateDTO;
 import pers.zymir.compute.model.req.CouponDiscountComputeReq;
+import pers.zymir.compute.model.res.CouponComputeRes;
 import pers.zymir.coupon.customer.dao.CouponMapper;
 import pers.zymir.coupon.customer.model.Coupon;
 import pers.zymir.coupon.customer.req.CustomerCouponDiscountComputeReq;
@@ -17,28 +21,29 @@ import pers.zymir.coupon.customer.req.ReceiveCouponReq;
 import pers.zymir.coupon.customer.res.CustomerCouponDiscountComputeRes;
 import pers.zymir.coupon.customer.service.ICustomerCouponService;
 import pers.zymir.coupon.template.model.CouponTemplate;
-import pers.zymir.coupon.template.service.ICouponTemplateService;
 import pers.zymir.util.sql.MybatisHelper;
 import pers.zymir.util.stream.StreamUtil;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class CustomerCouponService implements ICustomerCouponService {
 
     @Autowired
-    private ICouponTemplateService couponTemplateService;
-
-    @Autowired
     private CouponMapper couponMapper;
+    @Autowired
+    private WebClient.Builder webclientBuilder;
+
+    private static final String COUPON_TEMPLATE_SERVICE_ID = "coupon-template";
+    private static final String COUPON_COMPUTE_SERVICE_ID = "coupon-compute";
 
     @Override
     public boolean receiveCoupon(ReceiveCouponReq receiveCouponReq) {
         Long couponTemplateId = receiveCouponReq.getCouponTemplateId();
-        // TODO 修改为远程调用
-        CouponTemplate couponTemplate = couponTemplateService.getCouponTemplateById(couponTemplateId);
+        CouponTemplate couponTemplate = getCouponTemplate(couponTemplateId);
         if (Objects.isNull(couponTemplate)) {
             log.info("领取优惠券失败，优惠券模版不存在，用户ID：{}, 模版ID：{}", receiveCouponReq.getUserId(), couponTemplateId);
             return false;
@@ -58,6 +63,15 @@ public class CustomerCouponService implements ICustomerCouponService {
         return MybatisHelper.executeSuccess(insertResult);
     }
 
+    private CouponTemplate getCouponTemplate(Long couponTemplateId) {
+        return webclientBuilder.build()
+                .get()
+                .uri("http://" + COUPON_TEMPLATE_SERVICE_ID + "/coupon-template/" + couponTemplateId)
+                .retrieve()
+                .bodyToMono(CouponTemplate.class)
+                .block();
+    }
+
     @Override
     public List<Coupon> queryUserAvailableCoupons(long userId) {
         LambdaQueryWrapper<Coupon> queryWrapper = Wrappers.lambdaQuery(Coupon.class)
@@ -74,14 +88,45 @@ public class CustomerCouponService implements ICustomerCouponService {
         }
 
         List<Long> couponTemplateIds = StreamUtil.mapTo(coupons, Coupon::getCouponTemplateId);
-        // TODO 修改为远程调用
-        List<CouponTemplate> couponTemplates = couponTemplateService.listCouponTemplates(couponTemplateIds);
+        List<CouponTemplate> couponTemplates = listCouponTemplates(couponTemplateIds);
+
         CouponDiscountComputeReq couponDiscountComputeReq = new CouponDiscountComputeReq();
-        couponDiscountComputeReq.setCouponTemplates(BeanUtil.copyToList(couponTemplates, CouponTemplateDTO.class));
+        couponDiscountComputeReq.setCouponTemplates(couponTemplates.stream().map(this::convert2TemplateDTO).toList());
         couponDiscountComputeReq.setUserId(request.getUserId());
         couponDiscountComputeReq.setProductItems(BeanUtil.copyToList(request.getProductItems(), CartProductItemDTO.class));
 
-        // TODO 远程调用compute服务
-        return null;
+        CouponComputeRes couponComputeRes = executeCompute(couponDiscountComputeReq);
+        CustomerCouponDiscountComputeRes customerCouponDiscountComputeRes = new CustomerCouponDiscountComputeRes();
+        customerCouponDiscountComputeRes.setEachCouponDiscountMapping(couponComputeRes.getDiscountMapping());
+        customerCouponDiscountComputeRes.setBestCouponId(couponComputeRes.getBestCouponTemplateId());
+        return customerCouponDiscountComputeRes;
+    }
+
+    private CouponTemplateDTO convert2TemplateDTO(CouponTemplate couponTemplate) {
+        CouponTemplateDTO couponTemplateDTO = BeanUtil.toBean(couponTemplate, CouponTemplateDTO.class);
+        couponTemplateDTO.setShopId(couponTemplate.getShopId());
+        couponTemplateDTO.setCouponTemplateId(couponTemplate.getId());
+        return couponTemplateDTO;
+    }
+
+    private CouponComputeRes executeCompute(CouponDiscountComputeReq couponDiscountComputeReq) {
+        return webclientBuilder.build()
+                .post()
+                .uri("http://" + COUPON_COMPUTE_SERVICE_ID + "/coupon-compute")
+                .bodyValue(couponDiscountComputeReq)
+                .retrieve()
+                .bodyToMono(CouponComputeRes.class)
+                .block();
+    }
+
+    private List<CouponTemplate> listCouponTemplates(List<Long> couponTemplateIds) {
+        return webclientBuilder.build()
+                .post()
+                .uri("http://" + COUPON_TEMPLATE_SERVICE_ID + "/coupon-template/list")
+                .bodyValue(couponTemplateIds)
+                .retrieve()
+                .bodyToFlux(CouponTemplate.class)
+                .collectList()
+                .block();
     }
 }
