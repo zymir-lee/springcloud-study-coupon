@@ -18,6 +18,8 @@ spring:
         namespace: 458dcc83-0a0b-4e70-accc-3747477eca9f
         group: group-1
 feign:
+  circuitbreaker:
+    enabled: true
   client:
     config:
       # 全局配置
@@ -29,6 +31,6 @@ feign:
       # 针对特定服务做配置
       coupon-compute:
         # 网络连接阶段超时时间
-        connectTimeout: 1000
+        connectTimeout: 1
         # 服务请求响应超时时间
-        readTimeout: 1000
+        readTimeout: 1
