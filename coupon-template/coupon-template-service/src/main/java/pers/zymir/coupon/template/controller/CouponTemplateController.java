@@ -1,5 +1,6 @@
 package pers.zymir.coupon.template.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pers.zymir.basic.result.Resp;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/coupon-template")
+@SentinelResource("coupon-template")
 public class CouponTemplateController {
 
     @Autowired
@@ -28,6 +30,7 @@ public class CouponTemplateController {
     }
 
     @PostMapping("/list")
+    @SentinelResource(value = "list")
     public List<CouponTemplate> listCouponTemplates(@RequestBody List<Long> couponTemplateIds) {
         return couponTemplateService.listCouponTemplates(couponTemplateIds);
     }

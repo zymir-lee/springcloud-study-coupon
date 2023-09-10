@@ -18,3 +18,8 @@ spring:
         heart-beat-timeout: 15000
         namespace: 458dcc83-0a0b-4e70-accc-3747477eca9f
         group: group-1
+    sentinel:
+      eager: true
+      transport:
+        # 注意 这里是控制台的ip+端口
+        dashboard: 192.168.31.88:8333
