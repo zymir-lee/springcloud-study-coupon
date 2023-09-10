@@ -1,0 +1,13 @@
+# bootstrap将优先加载 避免一些配置在nacos当中影响其他组件加载
+spring:
+  application:
+    name: coupon-customer
+  cloud:
+    nacos:
+      config:
+        prefix: coupon-customer
+        server-addr: 192.168.31.88:8848
+        file-extension: yml
+        namespace: 458dcc83-0a0b-4e70-accc-3747477eca9f
+        group: group1
+        refresh-enabled: true

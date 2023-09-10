@@ -2,10 +2,12 @@ package pers.zymir.coupon.customer.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import pers.zymir.compute.model.dto.CartProductItemDTO;
 import pers.zymir.compute.model.dto.CouponTemplateDTO;
@@ -28,6 +30,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RefreshScope
 public class CustomerCouponService implements ICustomerCouponService {
 
     @Autowired
@@ -39,9 +42,17 @@ public class CustomerCouponService implements ICustomerCouponService {
 
     private static final String COUPON_TEMPLATE_SERVICE_ID = "coupon-template";
     private static final String COUPON_COMPUTE_SERVICE_ID = "coupon-compute";
+    
+    @NacosValue("${coupon.receive.enable:true}")
+    private boolean couponReceiveEnable;
 
     @Override
     public boolean receiveCoupon(ReceiveCouponReq receiveCouponReq) {
+        if (!checkActivityEnable()) {
+            log.info("领取优惠券失败，活动暂未开启");
+            return false;
+        }
+
         Long couponTemplateId = receiveCouponReq.getCouponTemplateId();
         CouponTemplate couponTemplate = couponTemplateClient.getCouponTemplate(couponTemplateId);
         if (Objects.isNull(couponTemplate)) {
@@ -61,6 +72,10 @@ public class CustomerCouponService implements ICustomerCouponService {
                 .build();
         int insertResult = couponMapper.insert(coupon);
         return MybatisHelper.executeSuccess(insertResult);
+    }
+
+    private boolean checkActivityEnable() {
+        return couponReceiveEnable;
     }
 
     @Override
