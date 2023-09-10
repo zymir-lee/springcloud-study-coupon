@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import pers.zymir.compute.model.dto.CartProductItemDTO;
@@ -43,8 +44,8 @@ public class CustomerCouponService implements ICustomerCouponService {
     private static final String COUPON_TEMPLATE_SERVICE_ID = "coupon-template";
     private static final String COUPON_COMPUTE_SERVICE_ID = "coupon-compute";
     
-    @NacosValue("${coupon.receive.enable:true}")
-    private boolean couponReceiveEnable;
+    @Value("${coupon.receive.enable:true}")
+    private Boolean couponReceiveEnable;
 
     @Override
     public boolean receiveCoupon(ReceiveCouponReq receiveCouponReq) {
